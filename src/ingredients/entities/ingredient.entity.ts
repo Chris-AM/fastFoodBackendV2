@@ -10,16 +10,18 @@ export class Ingredient {
   name: string;
   @Column('text')
   type: string;
-  @Column('text')
+  @Column('text', { nullable: true })
   description: string;
   @Column('boolean', {
     default: false,
   })
   inStock: boolean;
-  @Column('text')
+  @Column('text', {
+    nullable: true
+  })
   image: string;
   @Column('text', {
     unique: true,
   })
-  slug: string;
+  slug?: string;
 }
