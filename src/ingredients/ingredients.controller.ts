@@ -30,14 +30,14 @@ export class IngredientsController {
     return this.ingredientsService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.ingredientsService.findOne(id);
+  @Get(':searchTerm')
+  findOne(@Param('searchTerm') searchTerm: string) {
+    return this.ingredientsService.findOne(searchTerm);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
     return this.ingredientsService.update(id, updateIngredientDto);
