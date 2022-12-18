@@ -1,3 +1,4 @@
+//* Nest Imports
 import {
   BadRequestException,
   Injectable,
@@ -7,9 +8,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+//* Own Imports
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { Ingredient } from './entities/ingredient.entity';
+import { PaginationDTO } from '../common/DTOs/pagination.dto';
 
 @Injectable()
 export class IngredientsService {
@@ -29,8 +32,13 @@ export class IngredientsService {
     return;
   }
 
-  async findAll() {
-    const allIngredients = await this.ingredientRepository.find();
+  async findAll(paginationDto:PaginationDTO) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    console.log('🚀 pagination', limit, offset);
+    const allIngredients = await this.ingredientRepository.find({
+      take: limit,
+      skip: offset,
+    });
     return allIngredients;
   }
 
