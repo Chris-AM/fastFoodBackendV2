@@ -1,4 +1,10 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Ingredient {
@@ -8,8 +14,11 @@ export class Ingredient {
     unique: true,
   })
   name: string;
-  @Column('text')
-  type: string;
+  @Column('text', {
+    array: true,
+    default: [],
+  })
+  type: string[];
   @Column('text', { nullable: true })
   description: string;
   @Column('boolean', {
@@ -30,6 +39,11 @@ export class Ingredient {
     if (!this.slug) {
       this.slug = this.name;
     }
+    this.checkSlugUpdate();
+  }
+
+  @BeforeUpdate()
+  checkSlugUpdate() {
     this.slug = this.slug
       .toLowerCase()
       .replaceAll(' ', '_')

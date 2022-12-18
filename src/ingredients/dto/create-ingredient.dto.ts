@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsIn,
   IsOptional,
@@ -10,8 +11,10 @@ export class CreateIngredientDto {
   @IsString()
   @MinLength(3)
   name: string;
-  @IsIn(['Verduras/Frutas', 'Carnes', 'Quesos', 'Salsas', 'Panes', 'Panes'])
-  type: string;
+  @IsString({each: true})
+  @IsArray()
+  @IsOptional()
+  type: string[];
   @IsString()
   @IsOptional()
   description?: string;
