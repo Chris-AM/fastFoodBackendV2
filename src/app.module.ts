@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IngredientsModule } from './ingredients/ingredients.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { IngredientsModule } from './ingredients/ingredients.module';
       synchronize: Boolean(process.env.DB_SYNCHRO),
     }),
     IngredientsModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
