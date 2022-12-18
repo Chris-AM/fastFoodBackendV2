@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Ingredient {
@@ -17,11 +17,22 @@ export class Ingredient {
   })
   inStock: boolean;
   @Column('text', {
-    nullable: true
+    nullable: true,
   })
   image: string;
   @Column('text', {
     unique: true,
   })
   slug?: string;
+
+  @BeforeInsert()
+  checkSlugInsert() {
+    if (!this.slug) {
+      this.slug = this.name;
+    }
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 }

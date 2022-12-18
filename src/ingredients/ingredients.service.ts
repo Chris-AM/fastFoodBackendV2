@@ -1,4 +1,10 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -7,35 +13,61 @@ import { Ingredient } from './entities/ingredient.entity';
 
 @Injectable()
 export class IngredientsService {
+  private readonly logger = new Logger('Ingredient Service ⚙️ ');
   constructor(
     @InjectRepository(Ingredient)
-    private readonly ingredientRepository: Repository<Ingredient>
-  ){}
+    private readonly ingredientRepository: Repository<Ingredient>,
+  ) {}
   async create(createIngredientDto: CreateIngredientDto) {
     try {
       const ingredient = this.ingredientRepository.create(createIngredientDto);
       await this.ingredientRepository.save(ingredient);
       return ingredient;
     } catch (error) {
-      console.error('💀 Error =>', error);
-      throw new InternalServerErrorException('Internal Server Error, check logs');
+      this.errorHandler(error);
     }
-    return ;
+    return;
   }
 
-  findAll() {
-    return `This action returns all ingredients`;
+  async findAll() {
+    const allIngredients = await this.ingredientRepository.find();
+    return allIngredients;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ingredient`;
+  async findOne(id: string): Promise<Ingredient> {
+    try {
+      const doesIngredientExists = await this.ingredientRepository.findOne({
+        where: { id },
+      });
+      if (!doesIngredientExists)
+        throw new NotFoundException('Ingrediente no encontrado');
+      return doesIngredientExists;
+    } catch (error) {
+      this.errorHandler(error);
+    }
   }
 
-  update(id: number, updateIngredientDto: UpdateIngredientDto) {
+  update(id: string, updateIngredientDto: UpdateIngredientDto) {
     return `This action updates a #${id} ingredient`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ingredient`;
+  async remove(id: string) {
+    const doesIngredientExists = await this.findOne(id);
+    if (doesIngredientExists) {
+      await this.ingredientRepository.remove(doesIngredientExists);
+    }
+    return `Ingrediente ${doesIngredientExists.name} borrado`;
+  }
+
+  private errorHandler(error: any) {
+    // console.log('general errors =>', error);
+    this.logger.error(error);
+    if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
+    if (error.code === '22P02' || error.response.statusCode === 404) {
+      throw new NotFoundException('Ingrediente no encontrado');
+    }
+    throw new InternalServerErrorException('Unexpected error. Check Logs');
   }
 }
