@@ -32,7 +32,7 @@ export class IngredientsController {
 
   @Get(':searchTerm')
   findOne(@Param('searchTerm') searchTerm: string) {
-    return this.ingredientsService.findOne(searchTerm);
+    return this.ingredientsService.findOneAndPlainImage(searchTerm);
   }
 
   @Patch(':id')

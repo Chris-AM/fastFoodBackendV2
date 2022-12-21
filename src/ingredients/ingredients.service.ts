@@ -13,7 +13,7 @@ import { validate as isUUID } from 'uuid';
 //* Own Imports
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
-import { Ingredient } from './entities/ingredient.entity';
+import { Ingredient, IngredientImage } from './entities/';
 import { PaginationDTO } from '../common/DTOs/pagination.dto';
 
 @Injectable()
@@ -22,14 +22,22 @@ export class IngredientsService {
   constructor(
     @InjectRepository(Ingredient)
     private readonly ingredientRepository: Repository<Ingredient>,
+    @InjectRepository(IngredientImage)
+    private readonly ingredientImageRepository: Repository<IngredientImage>,
   ) {}
 
   //* CRUD
   async create(createIngredientDto: CreateIngredientDto) {
     try {
-      const ingredient = this.ingredientRepository.create(createIngredientDto);
+      const { images = [], ...ingredientDetails } = createIngredientDto;
+      const ingredient = this.ingredientRepository.create({
+        ...ingredientDetails,
+        images: images.map((image) =>
+          this.ingredientImageRepository.create({ url: image }),
+        ),
+      });
       await this.ingredientRepository.save(ingredient);
-      return ingredient;
+      return { ...ingredient, images };
     } catch (error) {
       this.errorHandler(error);
     }
@@ -42,8 +50,15 @@ export class IngredientsService {
     const allIngredients = await this.ingredientRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        images: true,
+      },
     });
-    return allIngredients;
+    const flatIngredient = allIngredients.map((ingredient) => ({
+      ...ingredient,
+      images: ingredient.images.map((ingredientImage) => ingredientImage.url),
+    }));
+    return flatIngredient;
   }
 
   async findOne(searchTerm: string): Promise<Ingredient> {
@@ -55,15 +70,22 @@ export class IngredientsService {
     return validatedIngredient;
   }
 
+  async findOneAndPlainImage(searchTerm: string) {
+    const { images, ...ingredient } = await this.findOne(searchTerm);
+    const imgUrl = images.map((image) => image.url);
+    return { ...ingredient, imgUrl };
+  }
+
   async update(id: string, updateIngredientDto: UpdateIngredientDto) {
     try {
       const ingredient = await this.ingredientRepository.preload({
         id,
         ...updateIngredientDto,
+        images: [],
       });
       if (!ingredient) {
         throw new NotFoundException(
-          `Producto ${id} no existe o no se encuentra`,
+          `ingrediento ${id} no existe o no se encuentra`,
         );
       }
       const updatedIngredient = await this.ingredientRepository.save(
@@ -87,8 +109,8 @@ export class IngredientsService {
 
   private async termValidation(searchTerm: string, ingredient: Ingredient) {
     if (isUUID(searchTerm)) {
-      ingredient = await this.ingredientRepository.findOne({
-        where: { id: searchTerm },
+      ingredient = await this.ingredientRepository.findOneBy({
+        id: searchTerm,
       });
     } else {
       const queryBuilder =
@@ -98,11 +120,12 @@ export class IngredientsService {
           name: searchTerm,
           slug: searchTerm,
         })
+        .leftJoinAndSelect('ingredient.images', 'ingredients-images')
         .getOne();
     }
     if (!ingredient) {
       throw new NotFoundException(
-        `Producto ${searchTerm} no existe o no se encuentra`,
+        `ingrediento ${searchTerm} no existe o no se encuentra`,
       );
     }
     return ingredient;
