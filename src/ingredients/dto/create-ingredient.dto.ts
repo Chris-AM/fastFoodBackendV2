@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsBoolean,
-  IsIn,
   IsOptional,
   IsString,
   MinLength,
@@ -11,17 +10,26 @@ export class CreateIngredientDto {
   @IsString()
   @MinLength(3)
   name: string;
-  @IsString({each: true})
+
+  @IsString({ each: true })
   @IsArray()
   @IsOptional()
   type: string[];
+
   @IsString()
   @IsOptional()
   description?: string;
+
   @IsBoolean()
   @IsOptional()
   inStock?: boolean;
+
   @IsString()
   @IsOptional()
   slug?: string;
+
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  images?: string[];
 }
