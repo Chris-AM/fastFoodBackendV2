@@ -4,11 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 //* Own Files
 import { IngredientsService } from './ingredients.service';
 import { IngredientsController } from './ingredients.controller';
-import { Ingredient } from './entities/ingredient.entity';
+import { Ingredient, IngredientImage } from './entities';
 
 @Module({
   controllers: [IngredientsController],
   providers: [IngredientsService],
-  imports: [TypeOrmModule.forFeature([Ingredient])],
+  imports: [TypeOrmModule.forFeature([Ingredient, IngredientImage])],
 })
 export class IngredientsModule {}
