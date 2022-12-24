@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Ingredient } from '.';
 
-@Entity()
+@Entity({ name: 'ingredient_images' })
 export class IngredientImage {
   @PrimaryGeneratedColumn('uuid')
   id: number;
