@@ -21,7 +21,12 @@ yarn install || npm install
 docker-compose up -d
 ```
 
-6. Run API as dev (according to your package)
+6. RUN SEED (JUST FOR DEV PORPUSES)
+```
+http://localhost:{port}/api/seed
+```
+
+7. Run API as dev (according to your package)
 ```
 yarn || npm run start:dev
 ```

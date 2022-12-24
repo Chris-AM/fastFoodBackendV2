@@ -10,5 +10,6 @@ import { Ingredient, IngredientImage } from './entities';
   controllers: [IngredientsController],
   providers: [IngredientsService],
   imports: [TypeOrmModule.forFeature([Ingredient, IngredientImage])],
+  exports: [IngredientsService],
 })
 export class IngredientsModule {}

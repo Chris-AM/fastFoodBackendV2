@@ -183,4 +183,14 @@ export class IngredientsService {
     await this.queryRunner.release();
     return this.queryRunner;
   }
+
+  //! JUST FOR DEV PURPOSE
+  async deleteAllProducts() {
+    const query = this.ingredientRepository.createQueryBuilder('ingredient');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.errorHandler(error);
+    }
+  }
 }
