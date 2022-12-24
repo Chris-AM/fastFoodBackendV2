@@ -9,6 +9,8 @@ export class IngredientImage {
   @Column('text')
   url: string;
 
-  @ManyToOne(() => Ingredient, (ingredient) => ingredient.images)
+  @ManyToOne(() => Ingredient, (ingredient) => ingredient.images, {
+    onDelete: 'CASCADE',
+  })
   ingredient: Ingredient;
 }
