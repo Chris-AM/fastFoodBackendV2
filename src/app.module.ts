@@ -1,6 +1,11 @@
+//!Nest Modules
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
+//!Node Modules
+import { join } from 'path';
+//!Own Modules
 import { IngredientsModule } from './ingredients/ingredients.module';
 import { CommonModule } from './common/common.module';
 import { SeedModule } from './seed/seed.module';
@@ -20,6 +25,9 @@ import { FilesModule } from './files/files.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: Boolean(process.env.DB_SYNCHRO),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     IngredientsModule,
     CommonModule,
