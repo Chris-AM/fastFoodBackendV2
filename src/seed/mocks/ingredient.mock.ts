@@ -29,7 +29,7 @@ export const seededData: SeedData = {
       type: ['Verduras/Frutas', 'Base'],
       description: 'Base para varios',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['pepinillos_1.jpeg', 'pepinillos_2.jpeg'],
       slug: 'pepinillos',
     },
     {
@@ -37,7 +37,7 @@ export const seededData: SeedData = {
       type: ['Verduras/Frutas', 'Base', 'Acompañamientos'],
       description: 'Base para varios',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['lechuga_1.jpeg', 'lechuga_2.jpeg'],
       slug: 'lechuga',
     },
     {
@@ -45,7 +45,7 @@ export const seededData: SeedData = {
       type: ['Panes', 'Base'],
       description: 'Base para hamburguesas',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['pan_1.png', 'pan_2.jpeg'],
       slug: 'pan_de_hamburguesa',
     },
     {
@@ -53,7 +53,7 @@ export const seededData: SeedData = {
       type: ['Lacteos/Quesos', 'Base'],
       description: 'Base para varios',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['queso_1.jpeg', 'queso_2.jpeg'],
       slug: 'queso',
     },
     {
@@ -61,7 +61,7 @@ export const seededData: SeedData = {
       type: ['Verduras/Frutas', 'Base'],
       description: 'Para las papas fritas',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['papas_1.jpeg', 'papas_2.jpeg'],
       slug: 'papas_crudas',
     },
     {
@@ -69,7 +69,7 @@ export const seededData: SeedData = {
       type: ['Carnes', 'Base'],
       description: 'Para las papas fritas',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['hamburguesa_1.jpeg', 'hamburguesa_2.jpeg'],
       slug: 'hamburguesa',
     },
     {
@@ -77,7 +77,7 @@ export const seededData: SeedData = {
       type: ['Condimentos', 'Salsas'],
       description: 'Para varios',
       inStock: true,
-      images: ['http://image1.jpg', 'http://image2.jpg'],
+      images: ['mayo_1.jpeg', 'mayo_2.jpeg'],
       slug: 'mayo',
     },
   ],

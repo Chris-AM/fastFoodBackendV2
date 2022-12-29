@@ -4,7 +4,7 @@
 
 # Fast Food Backend Version 2
 
-1. Clone Project (VIA SSH [SSH GUIDE](https://docs.github.com/es/authentication/connecting-to-github-with-ssh) )
+1. Clone Project (VIA SSH[SSH GUIDE](https://docs.github.com/es/authentication/connecting-to-github-with-ssh))
 ```
 git@github.com:Chris-AM/fastFoodBackendV2.git
 ```
@@ -12,7 +12,7 @@ git@github.com:Chris-AM/fastFoodBackendV2.git
 ```
 yarn install || npm install
 ```
-3. copy ```.env.template``` and paste as ```.env```
+3. copy```.env.template``` and paste as```.env```
 
 4. change env
 
@@ -26,7 +26,18 @@ docker-compose up -d
 http://localhost:{port}/api/seed
 ```
 
-7. Run API as dev (according to your package)
+7. GOTO ```public/static.zip``` and in root folder 
+```
+mkdir static/ && mkdir static/uploads
+``` 
+Then unzip ```static.zip``` there
+
+8. Make sure images are at
+```
+static/uploads/{feature}_images/
+```
+
+9. Run API as dev (according to your package)
 ```
 yarn || npm run start:dev
 ```
