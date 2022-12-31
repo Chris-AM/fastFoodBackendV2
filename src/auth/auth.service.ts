@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 //! Node imports
 import { Repository } from 'typeorm';
 //! Own Imports
-import { User } from './entities/user.entity';
-import { CreateUserDTO } from './dto/create-user.dto';
+import { User } from '../user/entities/user.entity';
+import { RegisterUserDTO } from './dto/register-user.dto';
 import { Response } from 'express';
 
 @Injectable()
@@ -15,15 +15,12 @@ export class AuthService {
     private readonly authRepository: Repository<User>,
   ) {}
 
-  public async registerNewUser(createUserDto: CreateUserDTO) {
-    console.log('🚀 in service');
+  public async registerNewUser(registerUserDto: RegisterUserDTO) {
     try {
-      console.log('🚀 in try');
-      const user = this.authRepository.create(createUserDto);
+      const user = this.authRepository.create(registerUserDto);
       await this.authRepository.save(user);
       return user;
     } catch (error) {
-      console.log('🚀 in catch', error);
       let response: Response;
       return response.status(501).json({
         ok: false,
