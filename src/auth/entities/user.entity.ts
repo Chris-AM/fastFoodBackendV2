@@ -1,30 +1,38 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('Users')
 export class User {
-    @PrimaryColumn('uuid')
-    id: string;
-    @Column('text', {
-        unique: true
-    })
-    email: string;
-    @Column('text')
-    password: string;
-    @Column('text')
-    fullName: string;
-    @Column('bool', {
-        default: true
-    })
-    isActive: string;
-    @Column('text', {
-        array: true,
-        default: ['user']
-    })
-    roles: string[];
-    @Column('text')
-    phone: string;
-    @Column('text')
-    avatar?: string;
-    @Column('text')
-    address?:string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column('text', {
+    unique: true,
+  })
+  email: string;
+
+  @Column('text')
+  password: string;
+
+  @Column('text')
+  fullName: string;
+
+  @Column('bool', {
+    default: true,
+  })
+  isActive: boolean;
+
+  @Column('text', {
+    array: true,
+    default: ['user'],
+  })
+  roles: string[];
+
+  @Column('text', { nullable: true })
+  phone?: string;
+
+  @Column('text', { nullable: true })
+  avatar?: string;
+
+  @Column('text', { nullable: true })
+  address?: string;
 }
