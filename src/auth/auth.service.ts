@@ -8,6 +8,7 @@ import { User } from '../user/entities/user.entity';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { Response } from 'express';
 import { errorHandler } from '../common/helpers/error-handler.helper';
+import { plainToHash } from 'src/common/helpers/bCrypt.helper';
 
 @Injectable()
 export class AuthService {
@@ -18,9 +19,13 @@ export class AuthService {
 
   public async registerNewUser(registerUserDto: RegisterUserDTO) {
     try {
-      const user = this.authRepository.create(registerUserDto);
-      await this.authRepository.save(user);
-      return user;
+      const { password, ...user } = this.authRepository.create(registerUserDto);
+      const parsedUser = {
+        ...user,
+        password: await plainToHash(password),
+      };
+      await this.authRepository.save(parsedUser);
+      return parsedUser;
     } catch (error) {
       let response: Response;
       errorHandler(error);

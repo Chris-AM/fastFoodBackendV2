@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
-export const errorHandler = (error: any) => {
+export const errorHandler = (error: any): never => {
   const logger = new Logger();
   //? just for debugging purpose
   logger.debug(error);
