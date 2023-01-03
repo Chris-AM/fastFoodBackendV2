@@ -1,14 +1,20 @@
 //! Nest imports
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 //! Node imports
 import { Repository } from 'typeorm';
+import { Response } from 'express';
 //! Own Imports
 import { User } from '../user/entities/user.entity';
 import { RegisterUserDTO } from './dto/register-user.dto';
-import { Response } from 'express';
-import { errorHandler } from '../common/helpers/error-handler.helper';
-import { plainToHash } from 'src/common/helpers/bCrypt.helper';
+import { LoginUserDTO } from './dto/login-user.dto';
+import {
+  comparePassToHash,
+  errorHandler,
+  plainToHash,
+} from '../common/helpers/';
+
+let response: Response;
 
 @Injectable()
 export class AuthService {
@@ -27,12 +33,26 @@ export class AuthService {
       await this.authRepository.save(parsedUser);
       return parsedUser;
     } catch (error) {
-      let response: Response;
       errorHandler(error);
       return response.status(501).json({
         ok: false,
         message: 'Error interno. No se pudo crear usuario',
       });
     }
+  }
+
+  public async loginUser(loginUserDto: LoginUserDTO) {
+    const { password, email } = loginUserDto;
+    const doesUserExist = await this.authRepository.findOne({
+      where: { email },
+      select: { email: true, password: true },
+    });
+    const check = await comparePassToHash(password, doesUserExist.password);
+    if (!doesUserExist || !check ) {
+      throw new NotFoundException(`email o contraseña no válidos`);
+    }
+    try {
+      return doesUserExist;
+    } catch (error) {}
   }
 }
