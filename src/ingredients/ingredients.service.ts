@@ -15,6 +15,7 @@ import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { Ingredient, IngredientImage } from './entities/';
 import { PaginationDTO } from '../common/DTOs/pagination.dto';
+import { errorHandler } from 'src/common/helpers/error-handler.helper';
 
 @Injectable()
 export class IngredientsService {
@@ -51,7 +52,7 @@ export class IngredientsService {
       await this.ingredientRepository.save(ingredient);
       return { ...ingredient, images };
     } catch (error) {
-      this.errorHandler(error);
+      errorHandler(error);
     }
     return;
   }
@@ -104,7 +105,7 @@ export class IngredientsService {
     } catch (error) {
       console.debug('in catch');
       this.rollbackAndReleaseRunner();
-      this.errorHandler(error);
+      errorHandler(error);
     }
   }
 
@@ -140,18 +141,6 @@ export class IngredientsService {
       );
     }
     return ingredient;
-  }
-
-  private errorHandler(error: any) {
-    //? just for debugging purpose
-    this.logger.debug(error);
-    if (error.code === '23505') {
-      throw new BadRequestException(error.detail);
-    }
-    if (error.code === '22P02') {
-      throw new NotFoundException('Ingrediente no encontrado');
-    }
-    throw new InternalServerErrorException('Unexpected error. Check Logs');
   }
 
   //* QUERY RUNNERS
@@ -190,7 +179,7 @@ export class IngredientsService {
     try {
       return await query.delete().where({}).execute();
     } catch (error) {
-      this.errorHandler(error);
+      errorHandler(error);
     }
   }
 }

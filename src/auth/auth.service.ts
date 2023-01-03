@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { Response } from 'express';
+import { errorHandler } from '../common/helpers/error-handler.helper';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
       return user;
     } catch (error) {
       let response: Response;
+      errorHandler(error);
       return response.status(501).json({
         ok: false,
         message: 'Error interno. No se pudo crear usuario',
