@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('Users')
 export class User {
@@ -35,4 +41,13 @@ export class User {
 
   @Column('text', { nullable: true })
   address?: string;
+
+  @BeforeInsert()
+  checkEmailCasingBeforeInsert() {
+    this.email = this.email.toLowerCase().trim();
+  }
+  @BeforeUpdate()
+  checkEmailCasingBeforeUpdate() {
+    this.checkEmailCasingBeforeInsert();
+  }
 }
