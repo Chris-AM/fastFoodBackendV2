@@ -1,5 +1,6 @@
 //! Nest imports
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 //! Node imports
 import { Repository } from 'typeorm';
@@ -8,6 +9,7 @@ import { Response } from 'express';
 import { User } from '../user/entities/user.entity';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 import {
   comparePassToHash,
   errorHandler,
@@ -21,6 +23,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly authRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   public async registerNewUser(registerUserDto: RegisterUserDTO) {
@@ -31,7 +34,10 @@ export class AuthService {
         password: await plainToHash(password),
       };
       await this.authRepository.save(parsedUser);
-      return parsedUser;
+      return {
+        ...parsedUser,
+        token: this.getJwtToken({ email: parsedUser.email }),
+      };
     } catch (error) {
       errorHandler(error);
       return response.status(501).json({
@@ -48,11 +54,19 @@ export class AuthService {
       select: { email: true, password: true },
     });
     const check = await comparePassToHash(password, doesUserExist.password);
-    if (!doesUserExist || !check ) {
+    if (!doesUserExist || !check) {
       throw new NotFoundException(`email o contraseña no válidos`);
     }
     try {
-      return doesUserExist;
+      return {
+        ...doesUserExist,
+        token: this.getJwtToken({ email: doesUserExist.email }),
+      };
     } catch (error) {}
+  }
+
+  private getJwtToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token;
   }
 }
