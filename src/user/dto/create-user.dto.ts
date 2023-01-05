@@ -6,7 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { MESSAGES } from '../../common/appMessages';
+import { MESSAGES } from '../../common/constants';
 
 export class CreateUserDto {
   

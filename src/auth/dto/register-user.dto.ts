@@ -7,7 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 //! Own imports
-import { MESSAGES } from '../../common/appMessages';
+import { MESSAGES } from '../../common/constants';
 
 export class RegisterUserDTO {
   @IsString({ message: MESSAGES.USERS.IS_MAIL_TYPED_VALIDATION })

@@ -10,3 +10,5 @@ export const MESSAGES = {
         IS_NAME_TYPED_VALIDATION:'El nombre debe ser llenado',
     }
 }
+
+export const META_ROLES = 'roles'
