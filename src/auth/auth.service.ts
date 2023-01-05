@@ -9,7 +9,7 @@ import { Response } from 'express';
 import { User } from '../user/entities/user.entity';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from './interfaces/';
 import {
   comparePassToHash,
   errorHandler,
@@ -36,7 +36,7 @@ export class AuthService {
       await this.authRepository.save(parsedUser);
       return {
         ...parsedUser,
-        token: this.getJwtToken({ email: parsedUser.email }),
+        token: this.getJwtToken({ id: parsedUser.id }),
       };
     } catch (error) {
       errorHandler(error);
@@ -51,17 +51,19 @@ export class AuthService {
     const { password, email } = loginUserDto;
     const doesUserExist = await this.authRepository.findOne({
       where: { email },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
     const check = await comparePassToHash(password, doesUserExist.password);
     if (!doesUserExist || !check) {
       throw new NotFoundException(`email o contraseña no válidos`);
     }
     try {
-      return {
+      const response = {
         ...doesUserExist,
-        token: this.getJwtToken({ email: doesUserExist.email }),
+        token: this.getJwtToken({ id: doesUserExist.id }),
       };
+      delete response.id;
+      return response;
     } catch (error) {}
   }
 
