@@ -5,7 +5,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { MESSAGES } from '../../common/appMessages';
+import { MESSAGES } from '../../common/constants';
 
 export class LoginUserDTO {
   @IsString({ message: MESSAGES.USERS.IS_MAIL_TYPED_VALIDATION })
