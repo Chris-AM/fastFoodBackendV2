@@ -15,16 +15,20 @@ import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { PaginationDTO } from 'src/common/DTOs/pagination.dto';
-import { Auth } from 'src/auth/decorators';
+import { Auth, GetUser } from 'src/auth/decorators';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('ingredients')
 export class IngredientsController {
   constructor(private readonly ingredientsService: IngredientsService) {}
 
-  @Auth()
   @Post()
-  create(@Body() createIngredientDto: CreateIngredientDto) {
-    return this.ingredientsService.create(createIngredientDto);
+  @Auth()
+  create(
+    @Body() createIngredientDto: CreateIngredientDto,
+    @GetUser() user: User,
+  ) {
+    return this.ingredientsService.create(createIngredientDto, user);
   }
 
   @Get()
@@ -37,17 +41,18 @@ export class IngredientsController {
     return this.ingredientsService.findOneAndPlainImage(searchTerm);
   }
 
-  @Auth()
   @Patch(':id')
+  @Auth()
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
+    @GetUser() user: User,
   ) {
-    return this.ingredientsService.update(id, updateIngredientDto);
+    return this.ingredientsService.update(id, updateIngredientDto, user);
   }
 
-  @Auth()
   @Delete(':id')
+  @Auth()
   remove(@Param('id') id: string) {
     return this.ingredientsService.remove(id);
   }

@@ -3,9 +3,11 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Ingredient } from '../../ingredients/entities/ingredient.entity';
 @Entity('Users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -41,6 +43,9 @@ export class User {
 
   @Column('text', { nullable: true })
   address?: string;
+
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.user)
+  ingredient: Ingredient;
 
   @BeforeInsert()
   checkEmailCasingBeforeInsert() {

@@ -1,21 +1,16 @@
-//* Nest Imports
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+//! Nest Imports
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-//* Third Party Imports
+//! Third Party Imports
 import { validate as isUUID } from 'uuid';
-//* Own Imports
+//! Own Imports
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { Ingredient, IngredientImage } from './entities/';
 import { PaginationDTO } from '../common/DTOs/pagination.dto';
 import { errorHandler } from 'src/common/helpers/error-handler.helper';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class IngredientsService {
@@ -40,7 +35,7 @@ export class IngredientsService {
     return validatedIngredient;
   }
 
-  public async create(createIngredientDto: CreateIngredientDto) {
+  public async create(createIngredientDto: CreateIngredientDto, user: User) {
     try {
       const { images = [], ...ingredientDetails } = createIngredientDto;
       const ingredient = this.ingredientRepository.create({
@@ -48,6 +43,7 @@ export class IngredientsService {
         images: images.map((image) =>
           this.ingredientImageRepository.create({ url: image }),
         ),
+        user,
       });
       await this.ingredientRepository.save(ingredient);
       return { ...ingredient, images };
@@ -80,7 +76,11 @@ export class IngredientsService {
     return { ...ingredient, imgUrl };
   }
 
-  public async update(id: string, updateIngredientDto: UpdateIngredientDto) {
+  public async update(
+    id: string,
+    updateIngredientDto: UpdateIngredientDto,
+    user: User,
+  ) {
     const { images, ...toUptade } = updateIngredientDto;
     const ingredient = await this.ingredientRepository.preload({
       id,
@@ -99,6 +99,7 @@ export class IngredientsService {
           this.ingredientImageRepository.create({ url: image }),
         );
       }
+      ingredient.user = user;
       await this.saveIngredientImageRunner(ingredient);
       await this.commitRunner();
       return this.findOneAndPlainImage(id);
@@ -174,7 +175,7 @@ export class IngredientsService {
   }
 
   //! JUST FOR DEV PURPOSE
-  async deleteAllProducts() {
+  async deleteAllIngredients() {
     const query = this.ingredientRepository.createQueryBuilder('ingredient');
     try {
       return await query.delete().where({}).execute();

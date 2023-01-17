@@ -3,10 +3,12 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IngredientImage } from './';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity({ name: 'ingredients' })
 export class Ingredient {
@@ -44,6 +46,9 @@ export class Ingredient {
     unique: true,
   })
   slug?: string;
+
+  @ManyToOne(() => User, (user) => user.ingredient, { eager: true })
+  user: User;
 
   //* VALIDATIONS
   @BeforeInsert()

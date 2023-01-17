@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 //TODO!!!!: BREAK THE SEED!!!
 interface SeedIngredient {
   name: string;
@@ -6,6 +8,13 @@ interface SeedIngredient {
   inStock: boolean;
   images: string[];
   slug: string;
+}
+
+interface SeedUser {
+  email: string;
+  password: string;
+  fullName: string;
+  roles: string[];
 }
 
 type ValidTypes =
@@ -19,10 +28,43 @@ type ValidTypes =
   | 'Panes';
 
 interface SeedData {
+  users: SeedUser[];
   ingredients: SeedIngredient[];
 }
 
 export const seededData: SeedData = {
+  users: [
+    {
+      email: 'test@user.com',
+      password: bcrypt.hashSync('userTest1', 10),
+      fullName: 'Test User',
+      roles: ['user'],
+    },
+    {
+      email: 'test@dev.com',
+      password: bcrypt.hashSync('devTest1', 10),
+      fullName: 'Test Dev',
+      roles: ['dev'],
+    },
+    {
+      email: 'test@admin.com',
+      password: bcrypt.hashSync('adminTest1', 10),
+      fullName: 'Admin Test',
+      roles: ['admin'],
+    },
+    {
+      email: 'test@roundman.com',
+      password: bcrypt.hashSync('roundmanTest1', 10),
+      fullName: 'roundman Test',
+      roles: ['rounds-man'],
+    },
+    {
+      email: 'test@manager.com',
+      password: bcrypt.hashSync('managerTest1', 10),
+      fullName: 'manager Test',
+      roles: ['manager'],
+    },
+  ],
   ingredients: [
     {
       name: 'Pepinillos',
