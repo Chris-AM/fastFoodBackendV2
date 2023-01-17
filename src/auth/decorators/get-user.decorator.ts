@@ -4,7 +4,7 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-export const GetUserGuard = createParamDecorator(
+export const GetUser = createParamDecorator(
   (data: string, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
