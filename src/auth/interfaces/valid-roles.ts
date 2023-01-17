@@ -1,6 +1,7 @@
 export enum ValidRoles {
-    admin = 'admin',
-    roundsman = 'rounds-man',
-    user = 'user',
-    manager = 'manager',
+  ADMIN = 'admin',
+  ROUNDSMAN = 'rounds-man',
+  USER = 'user',
+  MANAGER = 'manager',
+  DEV = 'dev'
 }
