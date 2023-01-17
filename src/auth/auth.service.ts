@@ -21,9 +21,9 @@ let response: Response;
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly authRepository: Repository<User>,
-    private readonly jwtService: JwtService,
   ) {}
 
   public async registerNewUser(registerUserDto: RegisterUserDTO) {
@@ -65,6 +65,14 @@ export class AuthService {
       delete response.id;
       return response;
     } catch (error) {}
+  }
+
+  public async checkAuthStatus(user: User){
+    const  response = {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
+    return  response;
   }
 
   private getJwtToken(payload: JwtPayload) {

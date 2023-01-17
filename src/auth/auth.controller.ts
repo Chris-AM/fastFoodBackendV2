@@ -1,8 +1,10 @@
 //!Nest imports
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 //!Own imports
 import { AuthService } from './auth.service';
 import { LoginUserDTO, RegisterUserDTO } from './dto/';
+import { User } from 'src/user/entities/user.entity';
+import { Auth, GetUser } from './decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -16,5 +18,11 @@ export class AuthController {
   @Post('login')
   public loginUser(@Body() loginUserDto: LoginUserDTO) {
     return this.authService.loginUser(loginUserDto);
+  }
+
+  @Get('status')
+  @Auth()
+  public checkAuthStatus(@GetUser() user: User) {
+    return this.authService.checkAuthStatus(user);
   }
 }
