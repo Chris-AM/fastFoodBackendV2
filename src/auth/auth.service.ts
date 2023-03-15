@@ -16,8 +16,6 @@ import {
   plainToHash,
 } from '../common/helpers/';
 
-let response: Response;
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,22 +26,28 @@ export class AuthService {
 
   public async registerNewUser(registerUserDto: RegisterUserDTO) {
     try {
-      const { password, ...user } = this.authRepository.create(registerUserDto);
+      const { password, ...user } = registerUserDto;
       const parsedUser = {
         ...user,
         password: await plainToHash(password),
+      }
+      const doesUserExist = await this.authRepository.findOne({
+        where: { email: parsedUser.email },
+      });
+      if (doesUserExist) {
+        throw new NotFoundException(`El usuario ya existe`);
+      }
+
+      const newUser = await this.authRepository.save(parsedUser);
+      const payload = { id: newUser.id };
+      const token = this.getJwtToken(payload);
+      const data = {
+        user: newUser,
+        token,
       };
-      await this.authRepository.save(parsedUser);
-      return {
-        ...parsedUser,
-        token: this.getJwtToken({ id: parsedUser.id }),
-      };
+      return data;
     } catch (error) {
       errorHandler(error);
-      return response.status(501).json({
-        ok: false,
-        message: 'Error interno. No se pudo crear usuario',
-      });
     }
   }
 
