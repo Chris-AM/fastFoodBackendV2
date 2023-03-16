@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { Ingredient } from '../../ingredients/entities/ingredient.entity';
+import { UserAvatar } from './user-image.entity';
 @Entity('Users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -38,8 +39,12 @@ export class User {
   @Column('text', { nullable: true })
   phone?: string;
 
-  @Column('text', { nullable: true })
-  avatar?: string;
+  @OneToMany(
+    () => UserAvatar,
+    (userAvatar) => userAvatar.user,
+    { cascade: true, eager: true }
+  )
+  avatar?: UserAvatar;
 
   @Column('text', { nullable: true })
   address?: string;

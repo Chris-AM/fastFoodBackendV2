@@ -27,21 +27,12 @@ export class FilesController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Get('ingredient/:fileName')
-  findIngredientByName(
-    @Res() response: Response,
-    @Param('fileName') fileName: string,
-  ) {
-    const image = this.filesService.findIngredientByName(fileName, response);
-    return image;
-  }
-
   @Post('ingredient')
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: fileFilter,
       storage: diskStorage({
-        destination: './static/uploads/ingredient_images',
+        destination: './public/static/ingredient_images',
         filename: fileNamer,
       }),
     }),
@@ -54,5 +45,43 @@ export class FilesController {
     if (!baseUrl) throw new BadRequestException('Missing baseurl');
     const secureUrl = `${baseUrl}/files/ingredient/${file.filename}`;
     return { secureUrl };
+  }
+
+  @Get('ingredient/:fileName')
+  findIngredientByName(
+    @Res() response: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    const image = this.filesService.findIngredientByName(fileName, response);
+    return image;
+  }
+
+  @Post('user')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
+      storage: diskStorage({
+        destination: './public/static/user_avatar',
+        filename: fileNamer,
+      }),
+    }),
+  )
+  uploadUserAvatar(@UploadedFile() file: Express.Multer.File){
+    if (!file) {
+      throw new BadRequestException('Archivo no soportado');
+    }
+    const baseUrl = this.configService.get('HOST_API');
+    if (!baseUrl) throw new BadRequestException('Missing baseurl');
+    const secureUrl = `${baseUrl}/files/user/${file.filename}`;
+    return { secureUrl };
+  }
+
+  @Get('user/:fileName')
+  findUserAvatarByName(
+    @Res() response: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    const avatar = this.filesService.findUserByName(fileName, response);
+    return avatar;
   }
 }

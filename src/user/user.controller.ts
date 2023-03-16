@@ -26,13 +26,12 @@ export class UserController {
 
   @Get()
   findAll(@Query() paginationDto: PaginationDTO) {
-    console.log('debug in get all users');
     return this.userService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Get(':searchTerm')
+  findOne(@Param('searchTerm') searchTerm: string) {
+    return this.userService.findOneAndPlainAvatar(searchTerm);
   }
 
   @Patch(':id')

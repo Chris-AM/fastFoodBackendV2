@@ -67,7 +67,7 @@ export class Ingredient {
   })
   @OneToMany(
     () => IngredientImage,
-    (ingregientImgage) => ingregientImgage.ingredient,
+    (ingredientImage) => ingredientImage.ingredient,
     { cascade: true, eager: true },
   )
   images: IngredientImage[];
