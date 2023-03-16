@@ -17,7 +17,7 @@ export class SeedService {
     //? injecting dev user
     const userToInsert = await this.insertUsers();
     await this.seedIngredients(userToInsert);
-    return 'SEED EXCECUTED';
+    return 'SEED EXECUTED';
   }
 
   private async deleteTables() {

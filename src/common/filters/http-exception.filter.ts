@@ -25,7 +25,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : exception.message;
 
     this.logger.error(
-      '***ERROR*** \n ' + 'Status: ' + status + '\n' + 'Message: ' + message,
+      '***ERROR*** \n ' + 'Status: ' + status + '\n' + 'Message: ' + message.message,
     );
 
     response.status(status).json({

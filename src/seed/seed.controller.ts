@@ -10,7 +10,7 @@ export class SeedController {
 
   @Get()
   @Auth()
-  excecuteSeed() {
+  executeSeed() {
     return this.seedService.runSeed();
   }
 
