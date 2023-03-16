@@ -6,25 +6,28 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PaginationDTO } from '../common/DTOs/pagination.dto';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('create-user')
   create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    return this.userService.createUserInPortal(createUserDto);
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() paginationDto: PaginationDTO) {
+    console.log('debug in get all users');
+    return this.userService.findAll(paginationDto);
   }
 
   @Get(':id')
