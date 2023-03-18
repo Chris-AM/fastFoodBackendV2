@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import { User } from "./user.entity";
 
 @Entity({name: 'user_avatar'})
@@ -9,7 +9,7 @@ export class UserAvatar {
     @Column('text')
     url: string;
 
-    @ManyToOne(() => User, (user) => user.avatar, {
+    @OneToOne(() => User, (user) => user.avatar, {
         onDelete: 'CASCADE',
     })
     user: User;

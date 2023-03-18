@@ -50,11 +50,12 @@ export class UserService {
       });
       const flatUser = allUsers.map((user) => ({
         ...user,
-        avatar: user.avatar.url,
+        avatar: user.avatar?.url || null,
       }));
       console.log(allUsers);
       return flatUser;
     } catch (error) {
+      console.log('error ===> ', error);
       errorHandler(error);
     }
   }

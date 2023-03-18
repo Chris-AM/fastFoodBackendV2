@@ -1,6 +1,7 @@
 import {
     IsBoolean,
   IsEmail,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -29,6 +30,8 @@ export class CreateUserDto {
   isActive: boolean;
   roles: string[];
   phone?: string;
+  @IsOptional()
+  @IsString()
   avatar?: string;
   address?: string;
 }

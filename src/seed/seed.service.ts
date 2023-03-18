@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { IngredientsService } from 'src/ingredients/ingredients.service';
-import { seededData } from './mocks/ingredient.mock';
+import { seededIngredients, seededUsers } from './mocks/';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity.js';
 @Injectable()
@@ -32,7 +32,7 @@ export class SeedService {
 
   private async insertUsers() {
     const users: User[] = [];
-    const seedUsers = seededData.users;
+    const seedUsers = seededUsers;
     seedUsers.forEach((user) => {
       users.push(this.userRepo.create(user));
     });
@@ -42,7 +42,7 @@ export class SeedService {
 
   private async seedIngredients(user: User) {
     await this.ingredientsService.deleteAllIngredients();
-    const ingredientsToSeed = seededData.ingredients;
+    const ingredientsToSeed = seededIngredients;
     const insertPromises = [];
     ingredientsToSeed.forEach((ingredient) => {
       insertPromises.push(this.ingredientsService.create(ingredient, user));

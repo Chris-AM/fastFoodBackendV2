@@ -3,12 +3,14 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Ingredient } from '../../ingredients/entities/ingredient.entity';
-import { UserAvatar } from './user-image.entity';
+import { UserAvatar } from './user-avatar.entity';
 @Entity('Users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -39,11 +41,12 @@ export class User {
   @Column('text', { nullable: true })
   phone?: string;
 
-  @OneToMany(
+  @OneToOne(
     () => UserAvatar,
     (userAvatar) => userAvatar.user,
     { cascade: true, eager: true }
   )
+  @JoinColumn()
   avatar?: UserAvatar;
 
   @Column('text', { nullable: true })
