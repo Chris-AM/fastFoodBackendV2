@@ -4,11 +4,13 @@ import { IngredientsService } from 'src/ingredients/ingredients.service';
 import { seededIngredients, seededUsers } from './mocks/';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity.js';
+import { UserService } from 'src/user/user.service';
 @Injectable()
 export class SeedService {
 
   constructor(
     private readonly ingredientsService: IngredientsService,
+    private readonly userService: UserService,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
@@ -22,6 +24,7 @@ export class SeedService {
 
   private async deleteTables() {
     await this.ingredientsService.deleteAllIngredients();
+    await this.userService.deleteAllUsers();
     const queryBuilder = this.userRepo.createQueryBuilder();
     await queryBuilder
       .delete()

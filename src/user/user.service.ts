@@ -84,12 +84,34 @@ export class UserService {
     return validatedUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  public async update(id: string, updateUserDto: UpdateUserDto) {
+    const { avatar, password, ...toUpdateRest } = updateUserDto;
+    const user = await this.userRepository.preload({ id, ...toUpdateRest });
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    await this.prepareRunner();
+    try {
+      if (avatar) {
+        await this.deleteUserAvatarRunner(id);
+        user.avatar = this.userAvatarRepository.create({ url: avatar });
+      }
+      await this.saveUserAvatarRunner(user);
+      await this.commitRunner();
+      return this.findOneAndPlainAvatar(id);
+    } catch (error) {
+      await this.rollbackAndReleaseRunner();
+      errorHandler(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  public async remove(id: string) {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    await this.userRepository.remove(user);
+    return `Usuario ${user.fullName} eliminado`;
   }
 
   //* Validations
@@ -111,5 +133,45 @@ export class UserService {
       throw new NotFoundException('Usuario no encontrado');
     }
     return user;
+  }
+
+  //* Query runners
+  private async prepareRunner() {
+    await this.queryRunner.connect();
+    await this.queryRunner.startTransaction();
+    return this.queryRunner;
+  }
+
+  private async deleteUserAvatarRunner(id: string) {
+    await this.queryRunner.manager.delete(UserAvatar, { id });
+  }
+
+  private async saveUserAvatarRunner(user: User) {
+    const save = await this.queryRunner.manager.save(user);
+  }
+
+  private async commitRunner() {
+    await this.queryRunner.commitTransaction();
+    return this.queryRunner;
+  }
+
+  private async rollbackAndReleaseRunner() {
+    await this.queryRunner.rollbackTransaction();
+    await this.queryRunner.release();
+    return this.queryRunner;
+  }
+
+  //! JUST FOR DEV PURPOSE
+  async deleteAllUsers() {
+    const query = this.userRepository.createQueryBuilder('user');
+    const queryAvatar = this.userAvatarRepository.createQueryBuilder('avatar');
+    try {
+      const deleteAvatar = await queryAvatar.delete().where({}).execute();
+      const deleteUsers = await query.delete().where({}).execute();
+      return { deleteAvatar, deleteUsers };
+
+    } catch (error) {
+      errorHandler(error);
+    }
   }
 }

@@ -41,11 +41,11 @@ export class User {
   @Column('text', { nullable: true })
   phone?: string;
 
-  @OneToOne(
-    () => UserAvatar,
-    (userAvatar) => userAvatar.user,
-    { cascade: true, eager: true }
-  )
+  @OneToOne(() => UserAvatar, (userAvatar) => userAvatar.user, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   avatar?: UserAvatar;
 
