@@ -32,7 +32,11 @@ export class UserService {
         password: await plainToHash(password),
       });
       const newUser = await this.userRepository.save(parsedUser);
-      return newUser;
+      const flatUser = {
+        ...newUser,
+        avatar: newUser.avatar?.url || null,
+      };
+      return flatUser;
     } catch (error) {
       errorHandler(error);
     }
@@ -46,7 +50,7 @@ export class UserService {
         skip: offset,
         relations: {
           avatar: true,
-        }
+        },
       });
       const flatUser = allUsers.map((user) => ({
         ...user,
@@ -62,9 +66,15 @@ export class UserService {
 
   public async findOneAndPlainAvatar(searchTerm: string) {
     try {
-      const { avatar , ...user } =  await this.findOne(searchTerm);
+      const { avatar, ...user } = await this.findOne(searchTerm);
+      const flatUser = {
+        ...user,
+        avatar: avatar?.url || null,
+      };
+      return flatUser;
     } catch (error) {
-      errorHandler(error);      
+      console.log('error ===> ', error);
+      errorHandler(error);
     }
   }
 
@@ -84,12 +94,16 @@ export class UserService {
 
   //* Validations
   private async termValidation(searchTerm: string, user: User) {
-    if(isUUID(searchTerm)){
-      user = await this.userRepository.findOneBy({id: searchTerm});
+    console.log('searchTerm ===> ', searchTerm);
+    if (isUUID(searchTerm)) {
+      user = await this.userRepository.findOneBy({ id: searchTerm });
     } else {
       const queryBuilder = this.userRepository.createQueryBuilder('user');
       user = await queryBuilder
-        .where('user.email = :email', { email: searchTerm })
+        .where('LOWER(user.fullName) LIKE LOWER(:fullName) or email=:email', {
+          fullName: searchTerm,
+          email: searchTerm,
+        })
         .leftJoinAndSelect('user.avatar', 'avatar')
         .getOne();
     }
