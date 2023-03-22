@@ -6,6 +6,7 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -13,8 +14,7 @@ import {
 //!Own Imports
 import { IngredientImage } from './';
 import { User } from 'src/user/entities/user.entity';
-import { Product } from '../../products/entities/product.entity';
-import { IngredientsInProduct } from '../../ingredients-in-products/entities/ingredients-in-product.entity';
+import { Product } from 'src/products/entities';
 
 @Entity({ name: 'ingredients' })
 export class Ingredient {
@@ -83,12 +83,11 @@ export class Ingredient {
   })
   slug?: string;
 
-  @OneToMany(
-    () => IngredientsInProduct,
-    (ingredientsInProduct) => ingredientsInProduct.ingredients,
-    { cascade: true, eager: true, onDelete: 'CASCADE' }
-  )
-  ingredientsInProduct: IngredientsInProduct[];
+  @ManyToMany(() => Product, (product) => product.ingredients, {
+    eager: true,
+    cascade: true,
+  })
+  products: Product[];
 
   @ManyToOne(() => User, (user) => user.ingredient, { eager: true })
   user: User;

@@ -1,14 +1,21 @@
+//! Nest Imports
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/user/entities';
+//! Third Party Imports
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IngredientsInProduct } from '../../ingredients-in-products/entities/ingredients-in-product.entity';
+//! Own Imports
 import { ProductImage } from '.';
+import { Ingredient } from '../../ingredients/entities/';
+import { User } from 'src/user/entities';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -55,17 +62,45 @@ export class Product {
   })
   images: ProductImage[];
 
+  @ApiProperty()
+  @ManyToMany(() => Ingredient, (ingredient) => ingredient.products)
+  @JoinTable({
+    name: 'product_ingredients',
+    joinColumn: { name: 'productId' },
+    inverseJoinColumn: { name: 'ingredientId' },
+  })
+  ingredients: Ingredient[];
+
+  @ApiProperty({
+    example: 'hamburguesa_clasica',
+    description: 'product slug',
+  })
+  @Column('text', {
+    unique: true,
+  })
+  slug?: string;
+
   @ApiProperty({
     example: 'Dev User',
     description: 'Nombre del usuario que creó el producto',
   })
-  @OneToMany(
-    () => IngredientsInProduct,
-    (ingredientsInProduct) => ingredientsInProduct.products,
-    { eager: true, cascade: true },
-  )
-  ingredientsInProduct: IngredientsInProduct;
-
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   user: User;
+
+  //* VALIDATIONS
+  @BeforeInsert()
+  checkSlugInsert() {
+    if (!this.slug) {
+      this.slug = this.name;
+    }
+    this.checkSlugUpdate();
+  }
+
+  @BeforeUpdate()
+  checkSlugUpdate() {
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 }
