@@ -13,6 +13,7 @@ import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ProductsModule } from './products/products.module';
+import { IngredientsInProductsModule } from './ingredients-in-products/ingredients-in-products.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     UserModule,
     ProductsModule,
+    IngredientsInProductsModule,
   ],
   controllers: [],
   providers: [],

@@ -1,5 +1,5 @@
-//!Nest Importos
-import { ApiProperty } from "@nestjs/swagger";
+//!Nest Imports
+import { ApiProperty } from '@nestjs/swagger';
 //!Node Imports
 import {
   BeforeInsert,
@@ -13,6 +13,8 @@ import {
 //!Own Imports
 import { IngredientImage } from './';
 import { User } from 'src/user/entities/user.entity';
+import { Product } from '../../products/entities/product.entity';
+import { IngredientsInProduct } from '../../ingredients-in-products/entities/ingredients-in-product.entity';
 
 @Entity({ name: 'ingredients' })
 export class Ingredient {
@@ -68,7 +70,7 @@ export class Ingredient {
   @OneToMany(
     () => IngredientImage,
     (ingredientImage) => ingredientImage.ingredient,
-    { cascade: true, eager: true },
+    { cascade: true, eager: true, onDelete: 'CASCADE' },
   )
   images: IngredientImage[];
 
@@ -80,6 +82,13 @@ export class Ingredient {
     unique: true,
   })
   slug?: string;
+
+  @OneToMany(
+    () => IngredientsInProduct,
+    (ingredientsInProduct) => ingredientsInProduct.ingredients,
+    { cascade: true, eager: true, onDelete: 'CASCADE' }
+  )
+  ingredientsInProduct: IngredientsInProduct[];
 
   @ManyToOne(() => User, (user) => user.ingredient, { eager: true })
   user: User;

@@ -11,6 +11,7 @@ import {
 
 import { Ingredient } from '../../ingredients/entities/ingredient.entity';
 import { UserAvatar } from './user-avatar.entity';
+import { Product } from 'src/products/entities/product.entity';
 @Entity('Users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -54,6 +55,9 @@ export class User {
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.user)
   ingredient: Ingredient;
+
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
 
   @BeforeInsert()
   checkEmailCasingBeforeInsert() {
