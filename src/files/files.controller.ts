@@ -27,6 +27,7 @@ export class FilesController {
     private readonly configService: ConfigService,
   ) {}
 
+  //! INGREDIENTS
   @Post('ingredient')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -56,6 +57,37 @@ export class FilesController {
     return image;
   }
 
+  //! PRODUCTS
+  @Post('product')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
+      storage: diskStorage({
+        destination: './public/static/product_images',
+        filename: fileNamer,
+      }),
+    }),
+  )
+  uploadProductImage(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('Archivo no soportado');
+    }
+    const baseUrl = this.configService.get('HOST_API');
+    if (!baseUrl) throw new BadRequestException('Missing baseurl');
+    const secureUrl = `${baseUrl}/files/product/${file.filename}`;
+    return { secureUrl };
+  }
+
+  @Get('product/:fileName')
+  findProductByName(
+    @Res() response: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    const image = this.filesService.findProductByName(fileName, response);
+    return image;
+  }
+  
+  //! USERS
   @Post('user')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -66,7 +98,7 @@ export class FilesController {
       }),
     }),
   )
-  uploadUserAvatar(@UploadedFile() file: Express.Multer.File){
+  uploadUserAvatar(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('Archivo no soportado');
     }
