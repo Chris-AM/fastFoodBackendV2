@@ -26,7 +26,7 @@ export class IngredientsService {
   ) {}
 
   //* CRUD
-  private async findOne(searchTerm: string): Promise<Ingredient> {
+  public async findOne(searchTerm: string): Promise<Ingredient> {
     let ingredient: Ingredient;
     const validatedIngredient = await this.termValidation(
       searchTerm,
@@ -81,14 +81,14 @@ export class IngredientsService {
     updateIngredientDto: UpdateIngredientDto,
     user: User,
   ) {
-    const { images, ...toUptade } = updateIngredientDto;
+    const { images, ...toUpdate } = updateIngredientDto;
     const ingredient = await this.ingredientRepository.preload({
       id,
-      ...toUptade,
+      ...toUpdate,
     });
     if (!ingredient) {
       throw new NotFoundException(
-        `ingrediento ${id} no existe o no se encuentra`,
+        `ingrediente ${id} no existe o no se encuentra`,
       );
     }
     await this.prepareRunner();
@@ -120,7 +120,7 @@ export class IngredientsService {
 
   //* VALIDATIONS
 
-  private async termValidation(searchTerm: string, ingredient: Ingredient) {
+  public async termValidation(searchTerm: string, ingredient: Ingredient) {
     if (isUUID(searchTerm)) {
       ingredient = await this.ingredientRepository.findOneBy({
         id: searchTerm,

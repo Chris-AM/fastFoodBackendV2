@@ -52,7 +52,7 @@ export class Product {
     example: 'True',
     description: '¿Está disponible el producto?',
   })
-  @Column('boolean', { default: false })
+  @Column('boolean', { default: true })
   inStock: boolean;
 
   @ApiProperty()

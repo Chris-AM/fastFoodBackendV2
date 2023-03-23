@@ -57,7 +57,7 @@ export class User {
   ingredient: Ingredient;
 
   @OneToMany(() => Product, (product) => product.user)
-  products: Product[];
+  products: Product;
 
   @BeforeInsert()
   checkEmailCasingBeforeInsert() {

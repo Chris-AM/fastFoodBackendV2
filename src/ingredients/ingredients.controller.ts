@@ -27,7 +27,7 @@ export class IngredientsController {
 
   @Post()
   @Auth()
-  @ApiResponse({status: 201, description: 'Ingredient Created Successfuly', type: Ingredient})
+  @ApiResponse({status: 201, description: 'Ingredient Created Successfully', type: Ingredient})
   create(
     @Body() createIngredientDto: CreateIngredientDto,
     @GetUser() user: User,
