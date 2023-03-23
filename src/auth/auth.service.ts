@@ -68,7 +68,10 @@ export class AuthService {
       };
       delete response.id;
       return response;
-    } catch (error) {}
+    } catch (error) {
+      console.log('error ===> ', error);
+      errorHandler(error);
+    }
   }
 
   public async checkAuthStatus(user: User){
