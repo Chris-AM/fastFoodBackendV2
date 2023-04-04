@@ -138,7 +138,7 @@ export class IngredientsService {
     }
     if (!ingredient) {
       throw new NotFoundException(
-        `ingrediento ${searchTerm} no existe o no se encuentra`,
+        `ingrediente ${searchTerm} no existe o no se encuentra`,
       );
     }
     return ingredient;

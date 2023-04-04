@@ -37,12 +37,19 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+    return this.productsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  @Auth()
+  @ApiResponse({ status: 200, description: 'Product Updated Successfully' })
+  update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @GetUser() user: User,
+  ) {
+    console.log(user);
+    return this.productsService.update(id, updateProductDto, user);
   }
 
   @Delete(':id')
