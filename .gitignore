@@ -43,3 +43,5 @@ lerna-debug.log*
 
 # Auto generated files
 static/
+package-lock.json
+yar.lock
