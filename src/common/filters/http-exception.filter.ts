@@ -25,15 +25,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : exception.message;
 
     this.logger.error(
-      '***ERROR*** \n ' + 'Status: ' + status + '\n' + 'Message: ' + message.message,
+      '***ERROR*** \n ' +
+        'Status: ' +
+        status +
+        '\n' +
+        'Message: ' +
+        message.message,
     );
 
     response.status(status).json({
-        time: new Date().toISOString(),
-        path: request.url,
-        method: request.method,
-        status: status,
-        error: message,
+      time: new Date().toISOString(),
+      path: request.url,
+      method: request.method,
+      status: status,
+      error: message,
     });
   }
 }

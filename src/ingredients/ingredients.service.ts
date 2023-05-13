@@ -120,7 +120,7 @@ export class IngredientsService {
 
   //* VALIDATIONS
 
-  public async termValidation(searchTerm: string, ingredient: Ingredient) {
+  private async termValidation(searchTerm: string, ingredient: Ingredient) {
     if (isUUID(searchTerm)) {
       ingredient = await this.ingredientRepository.findOneBy({
         id: searchTerm,
