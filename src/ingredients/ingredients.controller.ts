@@ -10,7 +10,7 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
 //* Own Imports
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -27,7 +27,11 @@ export class IngredientsController {
 
   @Post()
   @Auth()
-  @ApiResponse({status: 201, description: 'Ingredient Created Successfully', type: Ingredient})
+  @ApiResponse({
+    status: 201,
+    description: 'Ingredient Created Successfully',
+    type: Ingredient,
+  })
   create(
     @Body() createIngredientDto: CreateIngredientDto,
     @GetUser() user: User,
